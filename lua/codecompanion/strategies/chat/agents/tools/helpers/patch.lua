@@ -1,6 +1,6 @@
 local M = {}
 
-M4.FORMAT_PROMPT = [[
+M.FORMAT_PROMPT = [[
 *** Begin Patch
 [PATCH]
 *** End Patch
