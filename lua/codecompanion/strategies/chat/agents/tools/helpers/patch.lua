@@ -1,10 +1,11 @@
 local M = {}
 
-M.FORMAT_PROMPT = [[*** Begin Patch
+M4.FORMAT_PROMPT = [[
+*** Begin Patch
 [PATCH]
 *** End Patch
 
-The `[PATCH]` is the series of diffs to be applied for each change in the file. Each diff should be in this format:
+Where `[PATCH]` is the series of diffs to be applied for each change in the file. Each diff should be in this format:
 
  [3 lines of pre-context]
 -[old code]
@@ -27,7 +28,7 @@ You can use `@@[identifier]` to define a larger context in case the immediately 
 
 You can also use multiple `@@[identifiers]` to provide the right context if a single `@@` is not sufficient.
 
-Example with multiple blocks of changes and `@@` identifiers:
+An example of a message that you might pass as "code" to this function, in order to apply a patch with multiple blocks of changes and `@@` identifiers, is shown below.
 
 *** Begin Patch
 @@class BaseClass(models.Model):
@@ -41,7 +42,9 @@ Example with multiple blocks of changes and `@@` identifiers:
 +		raise NotImplementedError()
 *** End Patch
 
-This format is a bit similar to the `git diff` format; the difference is that `@@[identifiers]` uses the unique line identifiers from the preceding code instead of line numbers. We don't use line numbers anywhere since the before and after context, and `@@` identifiers are enough to locate the edits.]]
+This format is a bit similar to the `git diff` format; the difference is that `@@[identifiers]` uses the unique line identifiers from the preceding code instead of line numbers. We don't use line numbers anywhere since the before and after context, and `@@` identifiers are enough to locate the edits.
+
+Make sure to always add the '*** Begin Patch' and '*** End Patch' lines respectively before and after your patch content otherwise the tool call will fail.]]
 
 ---@class Change
 ---@field focus string[] Identifiers or lines for providing large context before a change

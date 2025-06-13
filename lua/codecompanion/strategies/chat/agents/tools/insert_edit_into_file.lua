@@ -10,17 +10,28 @@ local wait = require("codecompanion.strategies.chat.agents.tools.helpers.wait")
 local api = vim.api
 local fmt = string.format
 
-local PROMPT = [[<editFileInstructions>
-Before editing a file, ensure you have its content via the provided context or read_file tool.
-Use the insert_edit_into_file tool to modify files.
-NEVER show the code edits to the user - only call the tool. The system will apply and display the changes.
-For each file, give a short description of what needs to be changed, then use the insert_edit_into_file tools. You can use the tool multiple times in a response, and you can keep writing text after using a tool.
-The insert_edit_into_file tool is very smart and can understand how to apply your edits to the user's files, you just need to follow the patch format instructions carefully and to the letter.
+local PROMPT = [[# Insert Edit Into File Tool (`insert_edit_into_file`)
 
-## Patch Format
+## CONTEXT
+- You have access to an 'insert_edit_into_file' tool running within CodeCompanion, in Neovim.
+- You can use it to add, edit or delete code in a Neovim file.
+- Before editing a file, ensure you have its content via the provided context or read_file tool.
+## RESPONSE
+- NEVER show the code edits to the user, only call the tool. The system will apply and display the changes.
+- For each file, give a short description of what needs to be changed, then use the insert_edit_into_file tool.
+- Carefully read the tool description, especially the 'Patch Format' instructions
+- You can keep writing text after using a tool
+]]
+
+local TOOL_DESCRIPTION = [[This function is used to insert new code or modify existing code in a file in the current working directory.
+Use this tool once per file that needs to be modified, even if there are multiple changes for a file.
+You can use the tool multiple times in a response if you need to apply changes to multiple files.
+The system is very smart and can understand how to apply your edits to the user's files, you just need to follow the below Patch Format instructions carefully and to the letter. You should then pass your Patch as "code".
+
+Patch Format instructions:
 ]] .. patch.FORMAT_PROMPT .. [[
 The system uses fuzzy matching and confidence scoring so focus on providing enough context to uniquely identify the location.
-</editFileInstructions>]]
+]]
 
 ---Edit code in a file
 ---@param action {filepath: string, code: string, explanation: string} The arguments from the LLM's tool call
@@ -182,7 +193,7 @@ return {
     type = "function",
     ["function"] = {
       name = "insert_edit_into_file",
-      description = "Insert new code or modify existing code in a file in the current working directory. Use this tool once per file that needs to be modified, even if there are multiple changes for a file. The system is very smart and can understand how to apply your edits to the user's files if you follow the instructions.",
+      description = TOOL_DESCRIPTION,
       parameters = {
         type = "object",
         properties = {
@@ -196,7 +207,7 @@ return {
           },
           code = {
             type = "string",
-            description = "The code which follows the patch format",
+            description = "The code which follows the Patch Format",
           },
         },
         required = {
