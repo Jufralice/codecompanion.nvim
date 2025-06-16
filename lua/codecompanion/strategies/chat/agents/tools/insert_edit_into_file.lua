@@ -23,7 +23,7 @@ local PROMPT = [[# Insert Edit Into File Tool (`insert_edit_into_file`)
 - You can keep writing text after using a tool
 ]]
 
-local TOOL_DESCRIPTION = [[This function is used to insert new code or modify existing code in a file in the current working directory.
+local TOOL_DESCRIPTION = [[This function is used to insert new code or modify existing code in a file.
 Use this tool once per file that needs to be modified, even if there are multiple changes for a file.
 You can use the tool multiple times in a response if you need to apply changes to multiple files.
 The system is very smart and can understand how to apply your edits to the user's files, you just need to follow the below Patch Format instructions carefully and to the letter. You should then pass your Patch as "code".
@@ -203,7 +203,7 @@ return {
           },
           filepath = {
             type = "string",
-            description = "The relative path to the file to edit, including its filename and extension",
+            description = "The path to the file to edit, including its filename and extension",
           },
           code = {
             type = "string",
